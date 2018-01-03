@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Button, IconButton } from 'material-ui';
-import { withStyles } from 'material-ui/styles';
+import { withStyles, withTheme } from 'material-ui/styles';
 import ChevronLeft from 'material-ui-icons/ChevronLeft';
 import ChevronRight from 'material-ui-icons/ChevronRight';
 import { firstRowOnPage, lastRowOnPage } from '@devexpress/dx-grid-core';
@@ -53,7 +53,7 @@ const styles = theme => ({
 });
 
 const PageButton = ({
-  text, isActive, isDisabled, classes, onClick,
+  text, isActive, isDisabled, classes, onClick
 }) => {
   const buttonClasses = classNames({
     [classes.button]: true,
@@ -178,10 +178,19 @@ const PaginationBase = ({
   onCurrentPageChange,
   getMessage,
   classes,
+  theme
 }) => {
   const from = firstRowOnPage(currentPage, pageSize, totalCount);
   const to = lastRowOnPage(currentPage, pageSize, totalCount);
-
+  let PrevPage;
+  let NextPage;
+  if(theme.direction.toLowerCase() === 'ltr') {
+    PrevPage = ChevronLeft
+    NextPage = ChevronRight
+  } else {
+    PrevPage = ChevronRight
+    NextPage = ChevronLeft
+  }
   return (
     <div className={classes.pagination}>
       <span className={classes.rowsLabel}>
@@ -192,7 +201,7 @@ const PaginationBase = ({
         disabled={currentPage === 0}
         onClick={() => (currentPage > 0) && onCurrentPageChange(currentPage - 1)}
       >
-        <ChevronLeft />
+        <PrevPage />
       </IconButton>
       {renderPageButtons(currentPage, totalPages, classes, onCurrentPageChange)}
       <IconButton
@@ -200,7 +209,7 @@ const PaginationBase = ({
         disabled={currentPage === totalPages - 1 || totalCount === 0}
         onClick={() => currentPage < totalPages - 1 && onCurrentPageChange(currentPage + 1)}
       >
-        <ChevronRight />
+        <NextPage />
       </IconButton>
     </div>
   );
